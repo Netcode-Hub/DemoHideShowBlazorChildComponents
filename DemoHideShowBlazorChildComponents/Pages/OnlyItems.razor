@@ -1,0 +1,61 @@
+﻿@using DemoHideShowBlazorChildComponents.Models;
+
+@inject IItemService service
+@inject NavigationManager navigateMgr;
+@if (Visible)
+{
+    <h2>Item List</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6" style="position:absolute; top:10rem;">
+                <table class="table table-striped mt-5">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Quantity</th>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Items.Count() > 0)
+                        {
+                            foreach (var i in Items)
+                            {
+                                <tr>
+                                    <td>@i.Id</td>
+                                    <td>@i.Quantity</td>
+                                    <td>@i.Name</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                <a class="btn btn-info float-start" href="javascript:void(0)" @onclick="HideView">Return to Home</a>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback DispayHomePage { get; set; }
+
+    private void HideView()
+    {
+        DispayHomePage.InvokeAsync();
+    }
+
+    private List<Item> Items = new();
+
+    private void GetList()
+    {
+        Items = service.GetItems();
+    }
+
+    protected override void OnInitialized()
+    {
+        GetList();
+    }
+
+}

@@ -1,0 +1,44 @@
+﻿@page "/"
+
+<PageTitle>Hide or Show Component</PageTitle>
+
+<div class="vstack gap-3">
+    <div class="hstack gap-2">
+        <button class="btn btn-primary w-25" @onclick="ManageShowComponent">Add Item</button>
+        <button class="btn btn-primary w-25" @onclick="ManageShowItemsComponent">Show Item List</button>
+    </div>
+    <ItemList Visible="ShowAddItemComponent"></ItemList>
+    <OnlyItems Visible="ShowOnlyItemListComponent" DispayHomePage="ShowHomePage"></OnlyItems>
+    <DefaultPage Visible="ShowDefaultPage" Title="Wello, Welcome"></DefaultPage>
+</div>
+
+@code {
+    public bool ShowAddItemComponent { get; set; } = false;
+    public bool ShowOnlyItemListComponent { get; set; } = false;
+    public bool ShowDefaultPage { get; set; } = true;
+
+    private void ManageShowComponent()
+    {
+        ResetAll();
+        ShowAddItemComponent = true;
+    }
+
+    private void ManageShowItemsComponent()
+    {
+        ResetAll();
+        ShowOnlyItemListComponent = true;
+    }
+
+    private void ResetAll()
+    {
+        ShowAddItemComponent = false;
+        ShowOnlyItemListComponent = false;
+        ShowDefaultPage = false;
+    }
+
+    private void ShowHomePage()
+    {
+        ResetAll();
+        ShowDefaultPage = true;
+    }
+}

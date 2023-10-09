@@ -1,0 +1,85 @@
+﻿
+@using DemoHideShowBlazorChildComponents.Models;
+@inject IItemService service
+@if (Visible)
+{
+    <h2>Add Item</h2>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6" style="position:absolute; top:10rem;">
+                <EditForm Model="@ItemModel" OnValidSubmit="SaveItem">
+                    <div class="hstack gap-2">
+                        <div class="vstack gap-2">
+                            <label for="name" class="form-label">Item Name</label>
+                            <InputText id="name" class="form-control" @bind-Value="ItemModel.Name"></InputText>
+                        </div>
+                        <div class="vstack gap-2">
+                            <label for="quantity" class="form-label">Item Quantity</label>
+                            <InputNumber id="quantity" class="form-control" @bind-Value="ItemModel.Quantity"></InputNumber>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-25 mt-4">Save</button>
+                </EditForm>
+
+                <table class="table table-striped mt-5">
+
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Quantity</th>
+                            <th>Name</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Items.Count() > 0)
+                        {
+                            foreach (var i in Items)
+                            {
+                                <tr @onclick="()=>HandleEdit(i.Id)">
+                                    <td>@i.Id</td>
+                                    <td>@i.Quantity</td>
+                                    <td>@i.Name</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+
+    private List<Item> Items = new();
+    private Item ItemModel { get; set; } = new();
+    private int Counter = 1;
+
+    private void SaveItem()
+    {
+        if (ItemModel.Id == 0)
+        {
+            ItemModel.Id = Counter;
+            service.AddItem(ItemModel);
+            Counter++;
+        }
+        else
+        {
+            service.UpdateItem(ItemModel);
+        }
+        ItemModel = new Item();
+        GetList();
+    }
+
+    private void HandleEdit(int id)
+    {
+        ItemModel = service.GetItem(id);
+    }
+
+    private void GetList()
+    {
+        Items = service.GetItems();
+    }
+}
